@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Vendas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            width: 50%;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        h2 {
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin: 8px 0 4px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Cadastro de Vendas</h2>
+        <form id="salesForm">
+            <!-- Campos do Cliente -->
+            <label for="clientName">Nome do Cliente:</label>
+            <input type="text" id="clientName" name="clientName" required>
+
+            <label for="clientCpf">CPF do Cliente:</label>
+            <input type="text" id="clientCpf" name="clientCpf" required>
+
+            <label for="product">Produto/Serviço:</label>
+            <input type="text" id="product" name="product" required>
+
+            <label for="quantity">Quantidade:</label>
+            <input type="number" id="quantity" name="quantity" required>
+
+            <label for="unitPrice">Preço Unitário:</label>
+            <input type="number" id="unitPrice" name="unitPrice" step="0.01" required>
+
+            <label for="totalValue">Valor Total:</label>
+            <input type="number" id="totalValue" name="totalValue" step="0.01" disabled>
+
+            <label for="paymentMethod">Forma de Pagamento:</label>
+            <select id="paymentMethod" name="paymentMethod" required>
+                <option value="à vista">À vista</option>
+                <option value="parcelado">Parcelado</option>
+                <option value="cartão">Cartão de Crédito</option>
+                <option value="boleto">Boleto Bancário</option>
+                <option value="transferência">Transferência Bancária</option>
+            </select>
+
+            <label for="installments">Número de Parcelas (se parcelado):</label>
+            <input type="number" id="installments" name="installments" disabled>
+
+            <label for="saleDate">Data da Venda:</label>
+            <input type="date" id="saleDate" name="saleDate" required>
+
+            <label for="salesperson">Vendedor Responsável:</label>
+            <input type="text" id="salesperson" name="salesperson" required>
+
+            <button type="submit">Enviar</button>
+        </form>
+
+        <div class="result" id="result" style="display:none;">
+            <h3>Dados Enviados:</h3>
+            <p><strong>Nome do Cliente:</strong> <span id="resultClientName"></span></p>
+            <p><strong>CPF:</strong> <span id="resultClientCpf"></span></p>
+            <p><strong>Produto/Serviço:</strong> <span id="resultProduct"></span></p>
+            <p><strong>Quantidade:</strong> <span id="resultQuantity"></span></p>
+            <p><strong>Preço Unitário:</strong> <span id="resultUnitPrice"></span></p>
+            <p><strong>Valor Total:</strong> <span id="resultTotalValue"></span></p>
+            <p><strong>Forma de Pagamento:</strong> <span id="resultPaymentMethod"></span></p>
+            <p><strong>Parcelas:</strong> <span id="resultInstallments"></span></p>
+            <p><strong>Data da Venda:</strong> <span id="resultSaleDate"></span></p>
+            <p><strong>Vendedor:</strong> <span id="resultSalesperson"></span></p>
+        </div>
+    </div>
+
+    <script>
+        // Função para calcular o valor total
+        function calculateTotalValue() {
+            const quantity = parseFloat(document.getElementById("quantity").value);
+            const unitPrice = parseFloat(document.getElementById("unitPrice").value);
+            const totalValue = quantity * unitPrice;
+            document.getElementById("totalValue").value = totalValue.toFixed(2);
+        }
+
+        // Função para habilitar/desabilitar o campo de parcelas
+        function toggleInstallments() {
+            const paymentMethod = document.getElementById("paymentMethod").value;
+            const installmentsField = document.getElementById("installments");
+            if (paymentMethod === "parcelado") {
+                installmentsField.disabled = false;
+            } else {
+                installmentsField.disabled = true;
+                installmentsField.value = "";
+            }
+        }
+
+        // Evento para calcular valor total ao mudar quantidade ou preço unitário
+        document.getElementById("quantity").addEventListener("input", calculateTotalValue);
+        document.getElementById("unitPrice").addEventListener("input", calculateTotalValue);
+
+        // Evento para habilitar/desabilitar campo de parcelas
+        document.getElementById("paymentMethod").addEventListener("change", toggleInstallments);
+
+        // Função para mostrar os dados enviados
+        document.getElementById("salesForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            // Pegando os valores dos campos
+            const clientName = document.getElementById("clientName").value;
+            const clientCpf = document.getElementById("clientCpf").value;
+            const product = document.getElementById("product").value;
+            const quantity = document.getElementById("quantity").value;
+            const unitPrice = document.getElementById("unitPrice").value;
+            const totalValue = document.getElementById("totalValue").value;
+            const paymentMethod = document.getElementById("paymentMethod").value;
+            const installments = document.getElementById("installments").value;
+            const saleDate = document.getElementById("saleDate").value;
+            const salesperson = document.getElementById("salesperson").value;
+
+            // Preenchendo os dados na área de resultados
+            document.getElementById("resultClientName").textContent = clientName;
+            document.getElementById("resultClientCpf").textContent = clientCpf;
+            document.getElementById("resultProduct").textContent = product;
+            document.getElementById("resultQuantity").textContent = quantity;
+            document.getElementById("resultUnitPrice").textContent = unitPrice;
+            document.getElementById("resultTotalValue").textContent = totalValue;
+            document.getElementById("resultPaymentMethod").textContent = paymentMethod;
+            document.getElementById("resultInstallments").textContent = installments ? installments : "N/A";
+            document.getElementById("resultSaleDate").textContent = saleDate;
+            document.getElementById("resultSalesperson").textContent = salesperson;
+
+            // Mostrando o resultado
+            document.getElementById("result").style.display = "block";
+        });
+    </script>
+</body>
+</html>
